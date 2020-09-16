@@ -1,29 +1,36 @@
 import React from 'react';
 import _ from 'lodash';
+import { observer, inject } from 'mobx-react';
 import axios from 'axios';
 import Header from '../components/Header/Header';
 import ProductList from '../components/ProductList/ProductList';
 import WishList from '../components/WishList/WishList';
 
+@inject(stores => ({
+  list: stores.list.data,
+  getListData: stores.list.getListData
+}))
+
+@observer
 class ListContainer extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      page: 'product',
-      list: [],
-      sort: '',
-      limit: 10,
-      offset: 0,
-      wishList: [],
-      previousY: 0,
-      isLoading: false,
-      productScrollY: 0,
-      wishScrollY: 0,
-    }
+  state = {
+    page: 'product',
+    list: [],
+    sort: '',
+    limit: 10,
+    offset: 0,
+    wishList: [],
+    previousY: 0,
+    isLoading: false,
+    productScrollY: 0,
+    wishScrollY: 0,
   }
 
   componentDidMount() {
-    this.loadData()
+    const { getListData } = this.props
+    getListData()
+
+    //this.loadData()
 
     const options = {
       threshold: 1.0,
@@ -47,6 +54,7 @@ class ListContainer extends React.Component {
     this.setState({ previousY: y })
   }
 
+  /*
   loadData = () => {
     const options = {
       threshold: 1.0,
@@ -68,6 +76,7 @@ class ListContainer extends React.Component {
     .catch(err => console.log(err))
     observer.unobserve(this.loadingRef)
   }
+  */
 
   onClickChangeList = (page) => {
     if (this.state.page === 'product') {
