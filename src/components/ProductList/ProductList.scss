@@ -1,0 +1,30 @@
+.wrapper {
+  padding: 90px 20px 32px;
+  background: #F2F3F7;
+  ul {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(10, auto);
+    grid-column-gap: 20px;
+    grid-row-gap: 0;
+    li {
+      margin-bottom: 20px;
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .wrapper {
+    ul {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .wrapper {
+    ul {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
