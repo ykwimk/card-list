@@ -13,7 +13,6 @@ class Card extends React.Component {
     super(props)
 
     this.state = {
-      page: this.props.page,
       id: 0,
       imgSrc: '',
       name: '',
@@ -25,10 +24,10 @@ class Card extends React.Component {
   }
 
   componentDidMount() {
-    const { list, wishList } = this.props
+    const { productList, wishList } = this.props
     this.setState({ ...this.props.item }, () => {
       const { id } = this.state
-      if (_.some(wishList, _.find(list, (o) => o.id === id))) {
+      if (_.some(wishList, _.find(productList, (o) => o.id === id))) {
         this.setState({ isWish: true })
       }
     })

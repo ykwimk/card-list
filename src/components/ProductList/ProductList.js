@@ -1,31 +1,30 @@
 import React from 'react';
+import { observer, inject } from 'mobx-react';
 import classNames from 'classnames';
 import style from './ProductList.scss';
 import Card from '../Card/Card';
 
 const cx = classNames.bind(style)
 
-class ProductList extends React.Component {
-  constructor(props) {
-    super(props)
-  }
+@inject(stores => ({
+  productList: stores.list.productList,
+}))
 
+@observer
+class ProductList extends React.Component {
   componentDidMount() {
     window.scrollTo(0, this.props.productScrollY)
   }
 
   render() {
-    const { page, list, wishList, onClickToggleWishList } = this.props
+    const { productList, onClickToggleWishList } = this.props
     return (
       <>
         <div className={cx('wrapper')}>
           <ul>
-            {list.map(item =>
+            {productList.map(item =>
               <li key={item.id}>
                 <Card
-                  page={page}
-                  list={list}
-                  wishList={wishList}
                   item={item}
                   onClickToggleWishList={onClickToggleWishList}
                 />

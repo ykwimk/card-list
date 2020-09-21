@@ -1,37 +1,28 @@
 import React from 'react';
 import _ from 'lodash';
 import { observer, inject } from 'mobx-react';
-import axios from 'axios';
 import Header from '../components/Header/Header';
 import ProductList from '../components/ProductList/ProductList';
 import WishList from '../components/WishList/WishList';
 
 @inject(stores => ({
-  list: stores.list.data,
-  getListData: stores.list.getListData
+  page: stores.list.page,
+  productList: stores.list.productList,
+  wishList: stores.list.wishList,
+  getListData: stores.list.getListData,
 }))
 
 @observer
 class ListContainer extends React.Component {
   state = {
-    page: 'product',
-    list: [],
-    sort: '',
-    limit: 10,
-    offset: 0,
-    wishList: [],
-    previousY: 0,
-    isLoading: false,
     productScrollY: 0,
     wishScrollY: 0,
   }
 
   componentDidMount() {
-    const { getListData } = this.props
-    getListData()
+    this.props.getListData()
 
-    //this.loadData()
-
+    /*
     const options = {
       threshold: 1.0,
       root: null,
@@ -39,8 +30,10 @@ class ListContainer extends React.Component {
     }
     const observer = new IntersectionObserver(this.handleObserver.bind(this), options)
     observer.observe(this.loadingRef)
+    */
   }
 
+  /*
   handleObserver(entries) {
     const y = entries[0].boundingClientRect.y
     if (this.state.previousY > y) {
@@ -53,6 +46,7 @@ class ListContainer extends React.Component {
     }
     this.setState({ previousY: y })
   }
+  */
 
   /*
   loadData = () => {
@@ -67,9 +61,9 @@ class ListContainer extends React.Component {
     observer.observe(this.loadingRef)
     axios.get('data.json')
     .then(response => {
-      let listData = response.data.slice(offset, limit)
+      let productList = response.data.slice(offset, limit)
       this.setState({
-        list: [ ...this.state.list, ...listData ],
+        list: [ ...this.state.list, ...productList ],
         isLoading: false
       })
     })
@@ -77,44 +71,6 @@ class ListContainer extends React.Component {
     observer.unobserve(this.loadingRef)
   }
   */
-
-  onClickChangeList = (page) => {
-    if (this.state.page === 'product') {
-      this.setState({ productScrollY: window.scrollY })
-    } else {
-      this.setState({ wishScrollY: window.scrollY })
-    }
-
-    this.setState({ page, })
-  }
-
-  onSortChanged = (e) => {
-    const { value } = e.target
-
-    this.setState(prevState => {
-      const list = prevState.list
-      const wishList = prevState.wishList
-      let sortListData
-      let sortWishListData
-
-      if (value === "1") {
-        sortListData = _.orderBy(list, ['price'], ['desc'])
-        sortWishListData = _.orderBy(wishList, ['price'], ['desc'])
-      } else if (value === "2") {
-        sortListData = _.orderBy(list, ['price'], ['asc'])
-        sortWishListData = _.orderBy(wishList, ['price'], ['asc'])
-      } else {
-        sortListData = _.sortBy(list, ['id'])
-        sortWishListData = _.sortBy(wishList, ['id'])
-      }
-
-      return {
-        list: sortListData,
-        wishList: sortWishListData,
-        sort: value,
-      }
-    })
-  }
 
   onClickToggleWishList = (id) => {
     const { list, wishList } = this.state
@@ -130,34 +86,21 @@ class ListContainer extends React.Component {
   }
 
   render() {
+    const { page } = this.props
     return (
       <>
         <div id="contents" ref={this.divRef}>
-          <Header
-            page={this.state.page}
-            sort={this.state.sort}
-            onClickChangeList={this.onClickChangeList}
-            onSortChanged={this.onSortChanged}
-          />
-          {this.state.page === 'product'
+          <Header />
+          {page === 'product'
             ? <ProductList
-                page={this.state.page}
-                list={this.state.list}
-                wishList={this.state.wishList}
                 productScrollY={this.state.productScrollY}
                 onClickToggleWishList={this.onClickToggleWishList}
               />
             : <WishList
-                page={this.state.page}
-                list={this.state.list}
-                wishList={this.state.wishList}
                 wishScrollY={this.state.wishScrollY}
                 onClickToggleWishList={this.onClickToggleWishList}
               />
           }
-        </div>
-        <div ref={loadingRef => (this.loadingRef = loadingRef)}>
-          <span style={{ display: this.state.isLoading ? 'block' : 'none' }}>Loading...</span>
         </div>
       </>
     )

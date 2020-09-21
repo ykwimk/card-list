@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer, inject } from 'mobx-react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import style from './WishList.scss';
@@ -6,17 +7,17 @@ import Card from '../Card/Card';
 
 const cx = classNames.bind(style)
 
-class WishList extends React.Component {
-  constructor(props) {
-    super(props)
-  }
+@inject(stores => ({
+  wishList: stores.list.wishList,
+}))
 
+class WishList extends React.Component {
   componentDidMount() {
     window.scrollTo(0, this.props.wishScrollY)
   }
 
   render() {
-    const { page, list, wishList, onClickToggleWishList } = this.props
+    const { wishList, onClickToggleWishList } = this.props
     return (
       <div className={cx('wrapper')}>
         {!_.isEmpty(wishList)
@@ -24,9 +25,6 @@ class WishList extends React.Component {
               {wishList.map(item =>
                 <li key={item.id}>
                   <Card
-                    page={page}
-                    list={list}
-                    wishList={wishList}
                     item={item}
                     onClickToggleWishList={onClickToggleWishList}
                   />
