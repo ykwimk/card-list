@@ -18,17 +18,14 @@ class ProductList extends React.Component {
   }
 
   render() {
-    const { productList, onClickToggleWishList } = this.props
+    const { productList } = this.props
     return (
       <>
         <div className={cx('wrapper')}>
           <ul>
             {productList.map(item =>
               <li key={item.id}>
-                <Card
-                  item={item}
-                  onClickToggleWishList={onClickToggleWishList}
-                />
+                <Card item={item} />
               </li>
             )}
           </ul>

@@ -30,10 +30,7 @@ export default class ListStore {
 
   @action
   intersectionObserver = () => {
-    const options = {
-      threshold: 1.0,
-      root: null
-    }
+    const options = { threshold: 1.0, root: null }
     return new IntersectionObserver((entries, observer) => this.handleObserver(entries, observer), options)
   }
 
@@ -65,6 +62,15 @@ export default class ListStore {
     } else {
       this.productList = _.orderBy(this.productList, ['price'], [value])
       this.wishList = _.orderBy(this.wishList, ['price'], [value])
+    }
+  }
+
+  @action
+  onClickToggleWishList = (id) => {
+    if (_.some(this.wishList, _.find(this.productList, (o) => o.id === id))) {
+      this.wishList = _.filter(this.wishList, (o) => o.id !== id)
+    } else {
+      this.wishList = [ ...this.wishList, _.find(this.productList, (o) => o.id === id) ]
     }
   }
 }

@@ -9,6 +9,7 @@ const cx = classNames.bind(style)
 
 @inject(stores => ({
   wishList: stores.list.wishList,
+  wishScrollY: stores.list.wishScrollY,
 }))
 
 class WishList extends React.Component {
@@ -17,17 +18,14 @@ class WishList extends React.Component {
   }
 
   render() {
-    const { wishList, onClickToggleWishList } = this.props
+    const { wishList } = this.props
     return (
       <div className={cx('wrapper')}>
         {!_.isEmpty(wishList)
           ? <ul>
               {wishList.map(item =>
                 <li key={item.id}>
-                  <Card
-                    item={item}
-                    onClickToggleWishList={onClickToggleWishList}
-                  />
+                  <Card item={item} />
                 </li>
               )}
             </ul>

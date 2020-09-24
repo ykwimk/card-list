@@ -1,4 +1,5 @@
 import React from 'react';
+import { inject } from 'mobx-react';
 import _ from 'lodash';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import classNames from 'classnames';
@@ -6,34 +7,30 @@ import style from './Card.scss';
 
 const cx = classNames.bind(style)
 
-const options = { threshold: 0.5 }
+@inject(stores => ({
+  productList: stores.list.productList,
+  wishList: stores.list.wishList,
+  onClickToggleWishList: stores.list.onClickToggleWishList,
+}))
 
 class Card extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      id: 0,
-      imgSrc: '',
-      name: '',
-      price: 0,
-      isWish: false,
-    }
-
-    this.imgRef = React.createRef()
+  state = {
+    id: 0,
+    imgSrc: '',
+    name: '',
+    price: 0,
+    isWish: false,
   }
 
   componentDidMount() {
-    const { productList, wishList } = this.props
-    this.setState({ ...this.props.item }, () => {
-      const { id } = this.state
-      if (_.some(wishList, _.find(productList, (o) => o.id === id))) {
-        this.setState({ isWish: true })
-      }
+    const { item, productList, wishList } = this.props
+    this.setState({
+      ...item,
+      isWish: _.some(wishList, _.find(productList, (o) => o.id === this.props.item.id))? true : false,
     })
-
+    const options = { threshold: 0.5 }
     const observer = new IntersectionObserver(this.ioCallback, options)
-    observer.observe(this.imgRef.current)
+    observer.observe(this.imgRef)
   }
 
   ioCallback = (entries, observer) => {
@@ -57,7 +54,7 @@ class Card extends React.Component {
       <div className={cx('card')}>
         <div className={cx('thumbnail')}>
           <img
-            ref={this.imgRef}
+            ref={imgRef => (this.imgRef = imgRef)}
             src=""
             data-src={imgSrc}
           />

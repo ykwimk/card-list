@@ -17,11 +17,6 @@ import WishList from '../components/WishList/WishList';
 
 @observer
 class ListContainer extends React.Component {
-  state = {
-    productScrollY: 0,
-    wishScrollY: 0,
-  }
-
   componentDidMount() {
     const { getListData, intersectionObserver } = this.props
     getListData()
@@ -34,34 +29,12 @@ class ListContainer extends React.Component {
     .catch(err => console.log(err))
   }
 
-  onClickToggleWishList = (id) => {
-    const { list, wishList } = this.state
-    if (_.some(wishList, _.find(list, (o) => o.id === id))) {
-      this.setState({
-        wishList: _.filter(wishList, (o) => o.id !== id)
-      })
-    } else {
-      this.setState({
-        wishList: [ ...this.state.wishList, _.find(list, (o) => o.id === id) ]
-      })
-    }
-  }
-
   render() {
     const { page, isTargetRef } = this.props
     return (
       <>
         <Header />
-        {page === 'product'
-          ? <ProductList
-              productScrollY={this.state.productScrollY}
-              onClickToggleWishList={this.onClickToggleWishList}
-            />
-          : <WishList
-              wishScrollY={this.state.wishScrollY}
-              onClickToggleWishList={this.onClickToggleWishList}
-            />
-        }
+        {page === 'product' ? <ProductList /> : <WishList /> }
         {isTargetRef && <div ref={targetRef => (this.targetRef = targetRef)}></div>}
       </>
     )
