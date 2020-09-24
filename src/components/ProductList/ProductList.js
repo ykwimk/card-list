@@ -8,6 +8,7 @@ const cx = classNames.bind(style)
 
 @inject(stores => ({
   productList: stores.list.productList,
+  productScrollY: stores.list.productScrollY,
 }))
 
 @observer
