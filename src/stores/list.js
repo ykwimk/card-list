@@ -29,24 +29,33 @@ export default class ListStore {
   }
 
   @action
-  intersectionObserver = () => {
-    const options = { threshold: 1.0, root: null }
-    return new IntersectionObserver((entries, observer) => this.handleObserver(entries, observer), options)
-  }
-
-  @action
-  handleObserver = (entries, observer) => {
-    if (this.page === 'product' && entries[0].isIntersecting) {
+  increaseData = () => {
+    if (this.page === 'product') {
       this.offset = this.offset + 10
       this.limit = this.limit + 10
-      this.getListData()
     }
   }
 
   @action
+  intersectionObserver = (handleIntersection) => {
+    const options = { threshold: 1.0, root: null }
+    return new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          handleIntersection(entry.target, observer)
+        }
+      })
+    }, options)
+  }
+
+  @action
   onClickChangeList = (page) => {
-    if (this.page === 'product') this.productScrollY = window.scrollY
-    else this.wishScrollY = window.scrollY
+    if (this.page === 'product') {
+      this.productScrollY = window.scrollY
+    } else {
+      this.wishScrollY = window.scrollY
+    }
+
     this.page = page
   }
 

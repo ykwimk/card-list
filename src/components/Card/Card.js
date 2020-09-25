@@ -11,6 +11,7 @@ const cx = classNames.bind(style)
   productList: stores.list.productList,
   wishList: stores.list.wishList,
   onClickToggleWishList: stores.list.onClickToggleWishList,
+  intersectionObserver: stores.list.intersectionObserver,
 }))
 
 class Card extends React.Component {
@@ -23,23 +24,18 @@ class Card extends React.Component {
   }
 
   componentDidMount() {
-    const { item, productList, wishList } = this.props
+    const { item, productList, wishList, intersectionObserver } = this.props
     this.setState({
       ...item,
       isWish: _.some(wishList, _.find(productList, (o) => o.id === this.props.item.id))? true : false,
     })
-    const options = { threshold: 0.5 }
-    const observer = new IntersectionObserver(this.ioCallback, options)
-    observer.observe(this.imgRef)
+    const io = intersectionObserver(this.handleIntersection)
+    io.observe(this.imgRef)
   }
 
-  ioCallback = (entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        observer.unobserve(entry.target)
-        entry.target.src = entry.target.dataset.src
-      }
-    })
+  handleIntersection = (target, observer) => {
+    observer.unobserve(target)
+    target.src = target.dataset.src
   }
 
   onClickChange = (id) => {

@@ -7,12 +7,10 @@ import WishList from '../components/WishList/WishList';
 
 @inject(stores => ({
   page: stores.list.page,
-  productList: stores.list.productList,
-  wishList: stores.list.wishList,
+  isTargetRef: stores.list.isTargetRef,
   getListData: stores.list.getListData,
   intersectionObserver: stores.list.intersectionObserver,
-  handleObserver: stores.list.handleObserver,
-  isTargetRef: stores.list.isTargetRef,
+  increaseData: stores.list.increaseData,
 }))
 
 @observer
@@ -21,12 +19,18 @@ class ListContainer extends React.Component {
     const { getListData, intersectionObserver } = this.props
     getListData()
     .then(() => {
-      if (this.targetRef) {
-        const io = intersectionObserver()
-        io.observe(this.targetRef)
-      }
+      const io = intersectionObserver(this.handleIntersection)
+      io.observe(this.targetRef)
     })
     .catch(err => console.log(err))
+  }
+
+  handleIntersection = (target, observer) => {
+    const { page, increaseData, getListData } = this.props
+    if (page === 'product') {
+      increaseData()
+      getListData()
+    }
   }
 
   render() {
