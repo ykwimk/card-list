@@ -1,38 +1,30 @@
-import React from 'react';
-import { observer, inject } from 'mobx-react';
+import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import style from './ProductList.scss';
 import Card from '../Card/Card';
+import useStores from '../../useStores';
 
 const cx = classNames.bind(style)
 
-@inject(stores => ({
-  productList: stores.list.productList,
-  productScrollY: stores.list.productScrollY,
-}))
+const ProductList = observer(() => {
+  const { list } = useStores()
 
-@observer
-class ProductList extends React.Component {
-  componentDidMount() {
-    window.scrollTo(0, this.props.productScrollY)
-  }
+  useEffect(() => {
+    window.scrollTo(0, list.productScrollY)
+  }, [])
 
-  render() {
-    const { productList } = this.props
-    return (
-      <>
-        <div className={cx('wrapper')}>
-          <ul>
-            {productList.map(item =>
-              <li key={item.id}>
-                <Card item={item} />
-              </li>
-            )}
-          </ul>
-        </div>
-      </>
-    )
-  }
-}
+  return (
+    <div className={cx('wrapper')}>
+      <ul>
+        {list.productList.map(item =>
+          <li key={item.id}>
+            <Card item={item} />
+          </li>
+        )}
+      </ul>
+    </div>
+  )
+})
 
 export default ProductList;

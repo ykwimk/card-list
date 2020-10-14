@@ -21,7 +21,7 @@ const ListContainer = observer(() => {
     list.getListData()
     .then(() => {
       const io = list.intersectionObserver(handleIntersection)
-      io.observe(targetRef)
+      io.observe(targetRef.current)
     })
     .catch(err => console.log(err))
   }, [])
@@ -34,47 +34,5 @@ const ListContainer = observer(() => {
     </>
   )
 })
-
-/*
-@inject(stores => ({
-  page: stores.list.page,
-  isTargetRef: stores.list.isTargetRef,
-  getListData: stores.list.getListData,
-  intersectionObserver: stores.list.intersectionObserver,
-  increaseData: stores.list.increaseData,
-}))
-
-@observer
-class ListContainer extends React.Component {
-  componentDidMount() {
-    const { getListData, intersectionObserver } = this.props
-    getListData()
-    .then(() => {
-      const io = intersectionObserver(this.handleIntersection)
-      io.observe(this.targetRef)
-    })
-    .catch(err => console.log(err))
-  }
-
-  handleIntersection = (target, observer) => {
-    const { page, increaseData, getListData } = this.props
-    if (page === 'product') {
-      increaseData()
-      getListData()
-    }
-  }
-
-  render() {
-    const { page, isTargetRef } = this.props
-    return (
-      <>
-        <Header />
-        {page === 'product' ? <ProductList /> : <WishList /> }
-        {isTargetRef && <div ref={targetRef => (this.targetRef = targetRef)}></div>}
-      </>
-    )
-  }
-}
-*/
 
 export default ListContainer;

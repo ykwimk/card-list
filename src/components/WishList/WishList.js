@@ -1,39 +1,35 @@
-import React from 'react';
-import { observer, inject } from 'mobx-react';
+import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import style from './WishList.scss';
 import Card from '../Card/Card';
+import useStores from '../../useStores';
 
 const cx = classNames.bind(style)
 
-@inject(stores => ({
-  wishList: stores.list.wishList,
-  wishScrollY: stores.list.wishScrollY,
-}))
+const WishList = observer(() => {
+  const { list } = useStores()
+  const { wishList, wishScrollY } = list
 
-class WishList extends React.Component {
-  componentDidMount() {
-    window.scrollTo(0, this.props.wishScrollY)
-  }
+  useEffect(() => {
+    window.scrollTo(0, wishScrollY)
+  }, [])
 
-  render() {
-    const { wishList } = this.props
-    return (
-      <div className={cx('wrapper')}>
-        {!_.isEmpty(wishList)
-          ? <ul>
-              {wishList.map(item =>
-                <li key={item.id}>
-                  <Card item={item} />
-                </li>
-              )}
-            </ul>
-          : <div>위시 리스트에 담긴 상품이 없습니다</div>
-        }
-      </div>
-    )
-  }
-}
+  return (
+    <div className={cx('wrapper')}>
+      {!_.isEmpty(wishList)
+        ? <ul>
+            {wishList.map(item =>
+              <li key={item.id}>
+                <Card item={item} />
+              </li>
+            )}
+          </ul>
+        : <div>위시 리스트에 담긴 상품이 없습니다</div>
+      }
+    </div>
+  )
+})
 
 export default WishList;
